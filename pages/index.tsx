@@ -19,20 +19,21 @@ const Main = styled("main", {
 });
 
 const border = {
-  borderWidth: "1px",
-  borderColor: "#42f392",
+  borderWidth: "2px",
+  borderColor: "#42bbf3",
   borderStyle: "solid",
+  borderRadius: "2px",
 };
 
 const Dialogue = styled("fieldset", {
   ...border,
 
-  borderRadius: "12px",
-
   fontFamily: "Jetbrains Mono",
   fontSize: "1rem",
-  backgroundColor: "#1a150626",
+  backgroundColor: "#00000044",
   color: "White",
+
+  marginBottom: "16px",
 
   boxShadow: `
     1.7px 1.7px 3.5px rgba(0, 0, 0, 0.019),
@@ -50,18 +51,25 @@ const Dialogue = styled("fieldset", {
     color: "Green",
   },
 
-  maxWidth: "200px",
+  maxWidth: "320px",
 });
 
 const Legend = styled("legend", {
-  ...border,
-
   color: "White",
-  backgroundColor: "#1a1a1a",
 
-  fontSize: "1.2rem",
-  fontFamily: "Iosevka SS05",
-  padding: "0.5rem",
+  fontSize: "2rem",
+  fontFamily: "Cardo",
+  padding: "0 0.5rem",
+  borderRadius: "4px",
+});
+
+const SelectItem = styled("a", {
+  padding: "4px",
+  borderRadius: "2px",
+  "&:hover": {
+    cursor: "pointer",
+    backgroundColor: "#386aa3",
+  },
 });
 
 const Heading = styled("h1", {
@@ -82,14 +90,18 @@ const TagLine = styled("h2", {
   marginTop: "8px",
 });
 
-type FadeProps = { children: React.ReactNode; duration?: number };
-export const Fade = ({ children, duration }: FadeProps) => {
+type FadeProps = {
+  children: React.ReactNode;
+  duration?: number;
+  delay?: number;
+};
+export const Fade = ({ children, duration, delay }: FadeProps) => {
   const time = duration ? duration : 0.15;
   return (
     <motion.div
       animate={{ opacity: 1 }}
       initial={{ opacity: 0 }}
-      transition={{ duration: time }}
+      transition={{ duration: time, delay: delay }}
       exit="exit"
     >
       {children}
@@ -109,16 +121,41 @@ const Home: NextPage = () => {
       <Body>
         <Three />
         <Main>
-          <Fade duration={1}>
+          <Fade duration={0.5} delay={0.5}>
             <Heading>Zaymon Antonio.</Heading>
           </Fade>
-          <Fade duration={1.5}>
+          <Fade duration={0.5} delay={0.8}>
             <TagLine>Software Engineer.</TagLine>
           </Fade>
-          {/* <Dialogue>
-            <Legend>Console</Legend>
-            <p> {">"} A message stream loads forth from a distanct galaxy.</p>
-          </Dialogue> */}
+          <Fade duration={0.5} delay={0.9}>
+            <TagLine>Wonderment.</TagLine>
+          </Fade>
+          <Fade duration={0.5} delay={1}>
+            <TagLine>Writer.</TagLine>
+          </Fade>
+
+          <div style={{ marginTop: "48px" }}></div>
+
+          <Fade duration={0.15} delay={1.5}>
+            <Dialogue>
+              <Legend>My Writing</Legend>
+              <SelectItem href="https://boundless.garden">
+                {">"} Boundless.Garden
+              </SelectItem>
+            </Dialogue>
+            <Dialogue>
+              <Legend>My Projects</Legend>
+              <SelectItem> {">"} Boundless.Garden</SelectItem>
+            </Dialogue>
+            <Dialogue>
+              <Legend>Socials</Legend>
+              <SelectItem> {">"} Boundless.Garden</SelectItem>
+            </Dialogue>
+            <Dialogue>
+              <Legend>Get in Touch</Legend>
+              <SelectItem> {">"} Boundless.Garden</SelectItem>
+            </Dialogue>
+          </Fade>
         </Main>
       </Body>
     </div>
