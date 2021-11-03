@@ -2,9 +2,9 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { styled } from "@stitches/react";
 import Three from "../components/Galaxy";
-import { motion } from "framer-motion";
+import Fade from "../components/Fade";
 
-const Body = styled("body", {
+const Body = styled("div", {
   backgroundColor: "#1a1a1a",
   height: "100vh",
 });
@@ -13,7 +13,6 @@ const Main = styled("main", {
   position: "absolute",
   top: 0,
   left: 0,
-  height: "100vh",
   width: "100%",
   padding: "32px",
 });
@@ -90,28 +89,9 @@ const TagLine = styled("h2", {
   marginTop: "8px",
 });
 
-type FadeProps = {
-  children: React.ReactNode;
-  duration?: number;
-  delay?: number;
-};
-export const Fade = ({ children, duration, delay }: FadeProps) => {
-  const time = duration ? duration : 0.15;
-  return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      initial={{ opacity: 0 }}
-      transition={{ duration: time, delay: delay }}
-      exit="exit"
-    >
-      {children}
-    </motion.div>
-  );
-};
-
 const Home: NextPage = () => {
   return (
-    <div>
+    <>
       <Head>
         <title>Zaymon.Dev</title>
         <meta name="description" content="CHANGE ME" />
@@ -136,7 +116,7 @@ const Home: NextPage = () => {
 
           <div style={{ marginTop: "48px" }}></div>
 
-          <Fade duration={0.15} delay={1.5}>
+          {/* <Fade duration={0.15} delay={1.5}>
             <Dialogue>
               <Legend>My Writing</Legend>
               <SelectItem href="https://boundless.garden">
@@ -155,10 +135,10 @@ const Home: NextPage = () => {
               <Legend>Get in Touch</Legend>
               <SelectItem> {">"} Boundless.Garden</SelectItem>
             </Dialogue>
-          </Fade>
+          </Fade> */}
         </Main>
       </Body>
-    </div>
+    </>
   );
 };
 
