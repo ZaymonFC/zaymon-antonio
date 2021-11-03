@@ -1,5 +1,5 @@
 import { animated, useSpring } from "@react-spring/three";
-import { OrbitControls } from "@react-three/drei";
+import { Line, OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
@@ -13,6 +13,7 @@ import React, { Suspense, useEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
 import * as THREE from "three";
 import { Points } from "three";
+import { Line2 } from "three-stdlib";
 import { randomBrightColor } from "../utils/Colors";
 import Fade from "./Fade";
 
@@ -130,6 +131,23 @@ const useMousePosition = () => {
   return mousePosition;
 };
 
+const useGlobalRotation = (enabled: boolean, ref: any) => {
+  const mousePosition = useMousePosition();
+
+  useFrame(({ clock }, _delta) => {
+    const elapsedTime = clock.getElapsedTime();
+
+    if (enabled) {
+      const [x, y] = mousePosition.current;
+
+      if (ref.current) {
+        ref.current.rotation.y = 0.01 * elapsedTime + 0.00002 * x;
+        ref.current.rotation.x = 0.00001 * y;
+      }
+    }
+  });
+};
+
 function Galaxy() {
   const parameters = useGalaxyParameters();
   const particles = useRef<Points>();
@@ -138,20 +156,7 @@ function Galaxy() {
     generateGalaxy(parameters, particles);
   }, [parameters, particles]);
 
-  const mousePosition = useMousePosition();
-
-  useFrame(({ clock }, _delta) => {
-    const elapsedTime = clock.getElapsedTime();
-
-    if (parameters.animate) {
-      const [x, y] = mousePosition.current;
-
-      if (particles.current) {
-        particles.current.rotation.y = 0.01 * elapsedTime + 0.00002 * x;
-        particles.current.rotation.x = 0.00001 * y;
-      }
-    }
-  });
+  useGlobalRotation(parameters.animate, particles);
 
   const { scale } = useSpring({
     from: { scale: 0.0 },
@@ -184,6 +189,74 @@ function Nucleus({ size }: { size: number }) {
   );
 }
 
+const getPositionOnArms = (
+  radius: number,
+  spin: number,
+  branches: number,
+  branchNumber?: number
+) => {
+  const spinAngle = radius * spin;
+
+  const branchAngle =
+    ((branchNumber ? branchNumber : Math.floor(Math.random() * 10) % branches) / branches) *
+    Math.PI *
+    2;
+
+  const x = Math.cos(branchAngle + spinAngle) * radius;
+  const y = 0;
+  const z = Math.sin(branchAngle + spinAngle) * radius;
+
+  return [x, y, z];
+};
+
+type MarkerProps = { distance: number; branchNumber?: number };
+
+const Marker = ({ distance, branchNumber }: MarkerProps) => {
+  const { radius, spin, branches, animate } = useGalaxyParameters();
+  const markerHeight = 0.6;
+
+  const lineRef = React.useRef<Line2>(null);
+
+  // Setup initial translation to rotate around the origin (nucleus)
+  useEffect(() => {
+    const r = radius * distance;
+    const [x, _y, z] = getPositionOnArms(r, spin, branches, branchNumber);
+
+    if (lineRef.current) {
+      lineRef.current.geometry.translate(x, 0, z);
+    }
+  }, []);
+
+  // Rotate with everything else
+  useGlobalRotation(animate, lineRef);
+
+  const AnimatedLine = animated(Line);
+
+  const { opacity } = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+    config: { duration: 1000 },
+  });
+
+  const points: [number, number, number][] = [
+    [0, 0, 0],
+    [0, markerHeight, 0],
+  ];
+
+  const lineGeometry = points.map((p) => new THREE.Vector3(...p));
+  return (
+    <>
+      {/* <line ref={lineRef}> */}
+      {/* <LineGe */}
+      {/* <bufferGeometry attach="geometry"  /> */}
+      {/* <animated.lineBasicMaterial color="white" linewidth={1} transparent /> */}
+      {/* </line> */}
+
+      <AnimatedLine ref={lineRef} points={points} opacity={opacity} color="white" />
+    </>
+  );
+};
+
 type EffectsControls = {
   offSet: number;
   luminanceThreshold: number;
@@ -215,7 +288,7 @@ const useEffectsControls = (): EffectsControls =>
         bokehScale: {
           min: 0,
           max: 10,
-          value: 2.4,
+          value: 1.4,
         },
         focusDistance: {
           min: 0.0001,
@@ -252,10 +325,11 @@ const Three = () => (
   <Fade duration={0.1}>
     <Leva collapsed />
     <Canvas linear flat camera={{ position: [0, 1.5, 5] }}>
-      <OrbitControls enableZoom enablePan enableRotate enableDamping />
+      <OrbitControls enableZoom enableRotate enableDamping />
       <Suspense fallback={null}>
         <Galaxy />
         <Nucleus size={0.075} />
+        <Marker distance={0.2} branchNumber={1} />
       </Suspense>
       <Effects />
       {/* <axesHelper args={[1, 2, 2]} /> */}
