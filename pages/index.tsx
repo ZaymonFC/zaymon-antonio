@@ -3,6 +3,8 @@ import Head from "next/head";
 import { styled } from "@stitches/react";
 import Three from "../components/Galaxy";
 import Fade from "../components/Fade";
+import React from "react";
+import { MarkerCard, MarkerCardHeading, MarkerCardBody } from "../components/MarkerCard";
 
 const Body = styled("div", {
   backgroundColor: "#1a1a1a",

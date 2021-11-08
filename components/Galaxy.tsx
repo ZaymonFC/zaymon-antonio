@@ -1,5 +1,5 @@
 import { animated, useSpring } from "@react-spring/three";
-import { Line, OrbitControls } from "@react-three/drei";
+import { Html, OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
@@ -7,15 +7,16 @@ import {
   DepthOfField,
   EffectComposer,
 } from "@react-three/postprocessing";
+import { styled } from "@stitches/react";
 import { easeExpInOut } from "d3-ease";
 import { button, folder, Leva, useControls } from "leva";
 import React, { Suspense, useEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
 import * as THREE from "three";
 import { Points } from "three";
-import { Line2 } from "three-stdlib";
 import { randomBrightColor } from "../utils/Colors";
 import Fade from "./Fade";
+import { MarkerCard, MarkerCardBody, MarkerCardHeading } from "./MarkerCard";
 
 let useMouseMove = (sink: (p: number[]) => void, throttleMs?: number | undefined) => {};
 
@@ -131,23 +132,6 @@ const useMousePosition = () => {
   return mousePosition;
 };
 
-const useGlobalRotation = (enabled: boolean, ref: any) => {
-  const mousePosition = useMousePosition();
-
-  useFrame(({ clock }, _delta) => {
-    const elapsedTime = clock.getElapsedTime();
-
-    if (enabled) {
-      const [x, y] = mousePosition.current;
-
-      if (ref.current) {
-        ref.current.rotation.y = 0.01 * elapsedTime + 0.00002 * x;
-        ref.current.rotation.x = 0.00001 * y;
-      }
-    }
-  });
-};
-
 function Galaxy() {
   const parameters = useGalaxyParameters();
   const particles = useRef<Points>();
@@ -155,8 +139,6 @@ function Galaxy() {
   useEffect(() => {
     generateGalaxy(parameters, particles);
   }, [parameters, particles]);
-
-  useGlobalRotation(parameters.animate, particles);
 
   const { scale } = useSpring({
     from: { scale: 0.0 },
@@ -209,51 +191,77 @@ const getPositionOnArms = (
   return [x, y, z];
 };
 
+const Marker3D = () => {
+  const { distanceScale } = useControls({
+    UI: folder({ distanceScale: { min: 1, max: 15, step: 0.5, value: 4.5 } }),
+  });
+
+  return (
+    <Html distanceFactor={distanceScale} center position={[0, 0.5, 0]} as="div">
+      <Fade duration={0.3} delay={1.2}>
+        <MarkerCard>
+          <MarkerCardHeading>Boundless.Garden</MarkerCardHeading>
+          <MarkerCardBody>
+            This is some body content. Would you like to view the page that I am referring to blah
+            blah blah?
+          </MarkerCardBody>
+        </MarkerCard>
+      </Fade>
+    </Html>
+  );
+};
+
 type MarkerProps = { distance: number; branchNumber?: number };
 
 const Marker = ({ distance, branchNumber }: MarkerProps) => {
   const { radius, spin, branches, animate } = useGalaxyParameters();
-  const markerHeight = 0.6;
+  const markerHeight = 0.4;
 
-  const lineRef = React.useRef<Line2>(null);
+  const ref = React.useRef<any>(null);
 
   // Setup initial translation to rotate around the origin (nucleus)
   useEffect(() => {
     const r = radius * distance;
     const [x, _y, z] = getPositionOnArms(r, spin, branches, branchNumber);
 
-    if (lineRef.current) {
-      lineRef.current.geometry.translate(x, 0, z);
+    if (ref.current) {
+      ref.current.translateX(x);
+      ref.current.translateZ(z);
     }
   }, []);
-
-  // Rotate with everything else
-  useGlobalRotation(animate, lineRef);
-
-  const AnimatedLine = animated(Line);
-
-  const { opacity } = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-    config: { duration: 1000 },
-  });
 
   const points: [number, number, number][] = [
     [0, 0, 0],
     [0, markerHeight, 0],
   ];
 
-  const lineGeometry = points.map((p) => new THREE.Vector3(...p));
-  return (
-    <>
-      {/* <line ref={lineRef}> */}
-      {/* <LineGe */}
-      {/* <bufferGeometry attach="geometry"  /> */}
-      {/* <animated.lineBasicMaterial color="white" linewidth={1} transparent /> */}
-      {/* </line> */}
+  const { opacity } = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 0.5 },
+    config: { duration: 1500, easing: easeExpInOut },
+  });
 
-      <AnimatedLine ref={lineRef} points={points} opacity={opacity} color="white" />
-    </>
+  const geometry = new THREE.BufferGeometry().setFromPoints(
+    points.map((p) => new THREE.Vector3(...p))
+  );
+
+  const X: any = animated.line;
+
+  return (
+    <group ref={ref}>
+      <X geometry={geometry}>
+        <animated.lineBasicMaterial
+          attach="material"
+          color="white"
+          linejoin="round"
+          linecap="round"
+          linewidth={1}
+          transparent
+          opacity={opacity}
+        />
+      </X>
+      <Marker3D />
+    </group>
   );
 };
 
@@ -321,15 +329,41 @@ const Effects = () => {
   );
 };
 
+const TurnTable = ({ children }: { children: React.ReactNode }) => {
+  const { animate } = useGalaxyParameters();
+  const ref = useRef<any>();
+  const mousePosition = useMousePosition();
+
+  useFrame(({ clock }, _delta) => {
+    const elapsedTime = clock.getElapsedTime();
+
+    if (animate) {
+      const [x, y] = mousePosition.current;
+
+      if (ref.current) {
+        ref.current.rotation.y = 0.003 * elapsedTime + 0.00002 * x;
+        ref.current.rotation.x = 0.00001 * y;
+      }
+    }
+  });
+
+  return <group ref={ref}>{children}</group>;
+};
+
 const Three = () => (
   <Fade duration={0.1}>
     <Leva collapsed />
     <Canvas linear flat camera={{ position: [0, 1.5, 5] }}>
       <OrbitControls enableZoom enableRotate enableDamping />
       <Suspense fallback={null}>
-        <Galaxy />
-        <Nucleus size={0.075} />
-        <Marker distance={0.2} branchNumber={1} />
+        <TurnTable>
+          <Galaxy />
+          <Nucleus size={0.075} />
+          <Marker distance={0.2} branchNumber={1} />
+          <Marker distance={0.2} branchNumber={2} />
+          <Marker distance={0.2} branchNumber={3} />
+          <Marker distance={0.2} branchNumber={4} />
+        </TurnTable>
       </Suspense>
       <Effects />
       {/* <axesHelper args={[1, 2, 2]} /> */}
