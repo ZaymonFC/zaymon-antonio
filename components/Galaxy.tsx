@@ -1,5 +1,5 @@
 import { animated, useSpring } from "@react-spring/three";
-import { Html, OrbitControls } from "@react-three/drei";
+import { Bounds, Html, OrbitControls, useBounds } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
@@ -7,7 +7,6 @@ import {
   DepthOfField,
   EffectComposer,
 } from "@react-three/postprocessing";
-import { styled } from "@stitches/react";
 import { easeExpInOut } from "d3-ease";
 import { button, folder, Leva, useControls } from "leva";
 import React, { Suspense, useEffect, useRef } from "react";
@@ -16,7 +15,7 @@ import * as THREE from "three";
 import { Points } from "three";
 import { randomBrightColor } from "../utils/Colors";
 import Fade from "./Fade";
-import { MarkerCard, MarkerCardBody, MarkerCardHeading } from "./MarkerCard";
+import MarkerCard from "./MarkerCard";
 
 let useMouseMove = (sink: (p: number[]) => void, throttleMs?: number | undefined) => {};
 
@@ -199,13 +198,7 @@ const Marker3D = () => {
   return (
     <Html distanceFactor={distanceScale} center position={[0, 0.5, 0]} as="div">
       <Fade duration={0.3} delay={1.2}>
-        <MarkerCard>
-          <MarkerCardHeading>Boundless.Garden</MarkerCardHeading>
-          <MarkerCardBody>
-            This is some body content. Would you like to view the page that I am referring to blah
-            blah blah?
-          </MarkerCardBody>
-        </MarkerCard>
+        <MarkerCard active />
       </Fade>
     </Html>
   );
@@ -245,11 +238,11 @@ const Marker = ({ distance, branchNumber }: MarkerProps) => {
     points.map((p) => new THREE.Vector3(...p))
   );
 
-  const X: any = animated.line;
+  const AnimatedLine: any = animated.line;
 
   return (
     <group ref={ref}>
-      <X geometry={geometry}>
+      <AnimatedLine geometry={geometry}>
         <animated.lineBasicMaterial
           attach="material"
           color="white"
@@ -259,7 +252,7 @@ const Marker = ({ distance, branchNumber }: MarkerProps) => {
           transparent
           opacity={opacity}
         />
-      </X>
+      </AnimatedLine>
       <Marker3D />
     </group>
   );

@@ -1,10 +1,9 @@
+import { styled } from "@stitches/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { styled } from "@stitches/react";
-import Three from "../components/Galaxy";
-import Fade from "../components/Fade";
 import React from "react";
-import { MarkerCard, MarkerCardHeading, MarkerCardBody } from "../components/MarkerCard";
+import Fade from "../components/Fade";
+import Three from "../components/Galaxy";
 
 const Body = styled("div", {
   backgroundColor: "#1a1a1a",
@@ -108,12 +107,6 @@ const Home: NextPage = () => {
           </Fade>
           <Fade duration={0.5} delay={0.8}>
             <TagLine>Software Engineer.</TagLine>
-          </Fade>
-          <Fade duration={0.5} delay={0.9}>
-            <TagLine>Wonderment.</TagLine>
-          </Fade>
-          <Fade duration={0.5} delay={1}>
-            <TagLine>Writer.</TagLine>
           </Fade>
 
           <div style={{ marginTop: "48px" }}></div>
