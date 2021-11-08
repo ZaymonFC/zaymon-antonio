@@ -196,9 +196,15 @@ const Marker3D = () => {
   });
 
   return (
-    <Html distanceFactor={distanceScale} center position={[0, 0.5, 0]} as="div">
-      <Fade duration={0.3} delay={1.2}>
-        <MarkerCard active />
+    <Html
+      onClick={(m: any) => alert("Clicked!")}
+      distanceFactor={distanceScale}
+      center
+      position={[0, 0.5, 0]}
+      as="div"
+    >
+      <Fade duration={0.2} delay={0.8}>
+        <MarkerCard />
       </Fade>
     </Html>
   );

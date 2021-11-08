@@ -2,8 +2,15 @@ import { styled } from "@stitches/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
+import Emoji from "../components/Emoji";
 import Fade from "../components/Fade";
 import Three from "../components/Galaxy";
+import {
+  MarkerCard,
+  MarkerCardBody,
+  MarkerCardButton,
+  MarkerCardHeading,
+} from "../components/MarkerCard";
 
 const Body = styled("div", {
   backgroundColor: "#1a1a1a",
@@ -90,7 +97,25 @@ const TagLine = styled("h2", {
   marginTop: "8px",
 });
 
+const CenterScreen = styled("div", {
+  display: "flex",
+  justifyContent: "center",
+  justifyItems: "center",
+  alignItems: "center",
+
+  height: "100vh",
+});
+
+const HomeMarkerCard = styled(MarkerCard, {
+  width: 330,
+});
+
+const HomeMarkerCardBody = styled(MarkerCardBody, {
+  fontSize: 20,
+});
+
 const Home: NextPage = () => {
+  const [booted, setBooted] = React.useState(false);
   return (
     <>
       <Head>
@@ -100,38 +125,38 @@ const Home: NextPage = () => {
       </Head>
 
       <Body>
-        <Three />
-        <Main>
-          <Fade duration={0.5} delay={0.5}>
-            <Heading>Zaymon Antonio.</Heading>
+        {!booted && (
+          <Fade duration={0.3}>
+            <CenterScreen>
+              <HomeMarkerCard>
+                <MarkerCardHeading>Zaymon.dev</MarkerCardHeading>
+                <HomeMarkerCardBody>
+                  Welcome.
+                  <br />
+                  <br />
+                  <MarkerCardButton onClick={() => setBooted(true)}>
+                    Press to [B]oot the Universe
+                  </MarkerCardButton>
+                </HomeMarkerCardBody>
+              </HomeMarkerCard>
+            </CenterScreen>
           </Fade>
-          <Fade duration={0.5} delay={0.8}>
-            <TagLine>Software Engineer.</TagLine>
-          </Fade>
+        )}
+        {booted && (
+          <>
+            <Three />
+            <Main>
+              <Fade duration={0.5} delay={0.5}>
+                <Heading>Zaymon Antonio.</Heading>
+              </Fade>
+              <Fade duration={0.5} delay={0.8}>
+                <TagLine>Software Engineer.</TagLine>
+              </Fade>
 
-          <div style={{ marginTop: "48px" }}></div>
-
-          {/* <Fade duration={0.15} delay={1.5}>
-            <Dialogue>
-              <Legend>My Writing</Legend>
-              <SelectItem href="https://boundless.garden">
-                {">"} Boundless.Garden
-              </SelectItem>
-            </Dialogue>
-            <Dialogue>
-              <Legend>My Projects</Legend>
-              <SelectItem> {">"} Boundless.Garden</SelectItem>
-            </Dialogue>
-            <Dialogue>
-              <Legend>Socials</Legend>
-              <SelectItem> {">"} Boundless.Garden</SelectItem>
-            </Dialogue>
-            <Dialogue>
-              <Legend>Get in Touch</Legend>
-              <SelectItem> {">"} Boundless.Garden</SelectItem>
-            </Dialogue>
-          </Fade> */}
-        </Main>
+              <div style={{ marginTop: "48px" }}></div>
+            </Main>
+          </>
+        )}
       </Body>
     </>
   );

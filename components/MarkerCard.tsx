@@ -5,18 +5,17 @@ import Fade from "./Fade";
 
 const indigo = "#746aff";
 
-const Card = styled("fieldset", {
+export const MarkerCard = styled("fieldset", {
   margin: 0,
   color: "White",
   border: "1px solid white",
   borderRadius: "2px",
   width: "280px",
   background: "#00000061",
-
   marginBottom: 4,
 });
 
-const MarkerCardHeading = styled("legend", {
+export const MarkerCardHeading = styled("legend", {
   fontFamily: "Jetbrains Mono",
   color: "black",
   fontWeight: "bold",
@@ -30,7 +29,7 @@ const MarkerCardHeading = styled("legend", {
   },
 });
 
-const MarkerCardBody = styled("div", {
+export const MarkerCardBody = styled("div", {
   fontFamily: "Iosevka SS05",
   padding: "4px",
   fontSize: 14,
@@ -60,12 +59,25 @@ const KeyCommand = styled("span", {
   },
 });
 
-type MarkerCardProps = { active?: boolean };
+export const MarkerCardButton = styled("button", {
+  backgroundColor: "white",
+  borderRadius: 0,
+  border: "none",
+  fontFamily: "Iosevka SS05",
+  fontSize: 20,
+  padding: "4px 8px",
+  marginLeft: "auto",
 
-export default function MarkerCard({ active }: MarkerCardProps) {
+  "&:hover": {
+    color: "white",
+    backgroundColor: indigo,
+  },
+});
+
+export default function DefaultMarkerCard() {
   return (
     <>
-      <Card>
+      <MarkerCard>
         <MarkerCardHeading>Zaymon.dev</MarkerCardHeading>
         <MarkerCardBody>
           Hi there!
@@ -79,7 +91,7 @@ export default function MarkerCard({ active }: MarkerCardProps) {
           <Emoji symbol="🪐" label="Emoji of saturn." spaceLeft />
           <Emoji symbol="✨" label="Emoji of stars." spaceLeft />
         </MarkerCardBody>
-      </Card>
+      </MarkerCard>
       {/* {active && (
         <Fade duration={0.2} delay={1.5}>
           <MarkerCardControls>
