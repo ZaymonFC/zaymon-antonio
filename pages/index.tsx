@@ -1,8 +1,7 @@
 import { styled } from "@stitches/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import React from "react";
-import Emoji from "../components/Emoji";
+import React, { useEffect } from "react";
 import Fade from "../components/Fade";
 import Three from "../components/Galaxy";
 import {
@@ -11,6 +10,8 @@ import {
   MarkerCardButton,
   MarkerCardHeading,
 } from "../components/MarkerCard";
+
+import { playSfx, sfxAtlas } from "../components/Sounds";
 
 const Body = styled("div", {
   backgroundColor: "#1a1a1a",
@@ -116,6 +117,13 @@ const HomeMarkerCardBody = styled(MarkerCardBody, {
 
 const Home: NextPage = () => {
   const [booted, setBooted] = React.useState(false);
+
+  useEffect(() => {
+    if (booted) {
+      playSfx(sfxAtlas.boot);
+    }
+  }, [booted]);
+
   return (
     <>
       <Head>
