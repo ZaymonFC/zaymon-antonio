@@ -3841,3 +3841,8 @@ zustand@^3.5.1, zustand@^3.5.13, zustand@^3.5.2, zustand@^3.6.4:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.6.4.tgz#2aed404072e3d4538fbc380bcf4eee88b174051d"
   integrity sha512-liH2ZaEOSiEaVEl7N0CVzoKYZCQPpibfsIgB2ksrjvfu17WME8Eh7XV/MCi5OQM5AnbuYbLowplR03UP5yrNYw==
+
+zzfx@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/zzfx/-/zzfx-1.1.8.tgz#54eda31d482d00b3ab45c636be588e57ef50ba0b"
+  integrity sha512-4HWCIuYV3ThQjgQScb6q8izG2S7lT+fdaWxQ2nYG0A/9+lBExsvP2f3gsoFoGnBEQItO/usoY/6RYkIx93JATg==
