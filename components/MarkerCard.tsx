@@ -4,27 +4,30 @@ import Emoji from "./Emoji";
 
 const indigo = "#746aff";
 
-export const MarkerCard = styled("fieldset", {
+export const MarkerCard = styled("div", {
   width: "280px",
 
   color: "White",
   border: "1px solid white",
-  borderRadius: "2px",
+  borderRadius: 4,
 
   transform: "translateY(-50%)",
-  backdropFilter: "blur(4px)",
+  backdropFilter: "blur(8px)",
 
   background: "#000000ba",
 });
 
-export const MarkerCardHeading = styled("legend", {
+export const MarkerCardHeading = styled("div", {
+  position: "absolute",
+  top: -13,
+  left: 10,
   fontFamily: "Jetbrains Mono",
   color: "black",
   fontWeight: "bold",
   background: "white",
 
   borderRadius: "2px",
-  padding: "2px 4px",
+  padding: "2px 6px",
 
   "&:hover": {
     color: indigo,
@@ -34,10 +37,10 @@ export const MarkerCardHeading = styled("legend", {
 });
 
 export const MarkerCardBody = styled("div", {
+  marginTop: 10,
+  padding: "10px 14px",
   fontFamily: "Iosevka SS05",
   fontSize: 14,
-
-  padding: 4,
 });
 
 const MarkerCardControls = styled("div", {
