@@ -1,18 +1,20 @@
 import { styled } from "@stitches/react";
 import React from "react";
 import Emoji from "./Emoji";
-import Fade from "./Fade";
 
 const indigo = "#746aff";
 
 export const MarkerCard = styled("fieldset", {
-  margin: 0,
+  width: "280px",
+
   color: "White",
   border: "1px solid white",
   borderRadius: "2px",
-  width: "280px",
-  background: "#00000061",
-  marginBottom: 4,
+
+  transform: "translateY(-50%)",
+  backdropFilter: "blur(4px)",
+
+  background: "#000000ba",
 });
 
 export const MarkerCardHeading = styled("legend", {
@@ -20,8 +22,10 @@ export const MarkerCardHeading = styled("legend", {
   color: "black",
   fontWeight: "bold",
   background: "white",
-  padding: "4px",
+
   borderRadius: "2px",
+  padding: "2px 4px",
+
   "&:hover": {
     color: indigo,
     borderColor: indigo,
@@ -31,8 +35,9 @@ export const MarkerCardHeading = styled("legend", {
 
 export const MarkerCardBody = styled("div", {
   fontFamily: "Iosevka SS05",
-  padding: "4px",
   fontSize: 14,
+
+  padding: 4,
 });
 
 const MarkerCardControls = styled("div", {
@@ -92,14 +97,13 @@ export default function DefaultMarkerCard() {
           <Emoji symbol="✨" label="Emoji of stars." spaceLeft />
         </MarkerCardBody>
       </MarkerCard>
-      {/* {active && (
-        <Fade duration={0.2} delay={1.5}>
-          <MarkerCardControls>
-            <KeyCommand>{"<<"}</KeyCommand>
-            <KeyCommand>{">>"}</KeyCommand>
-          </MarkerCardControls>
-        </Fade>
-      )} */}
+
+      {/* <Fade duration={0.2} delay={1.5}>
+        <MarkerCardControls>
+          <KeyCommand>{"<<"}</KeyCommand>
+          <KeyCommand>{">>"}</KeyCommand>
+        </MarkerCardControls>
+      </Fade> */}
     </>
   );
 }

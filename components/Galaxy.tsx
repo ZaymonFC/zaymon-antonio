@@ -1,5 +1,5 @@
 import { animated, useSpring } from "@react-spring/three";
-import { Bounds, Html, OrbitControls, useBounds } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
@@ -15,7 +15,7 @@ import * as THREE from "three";
 import { Points } from "three";
 import { randomBrightColor } from "../utils/Colors";
 import Fade from "./Fade";
-import MarkerCard from "./MarkerCard";
+import { Marker } from "./Marker";
 
 let useMouseMove = (sink: (p: number[]) => void, throttleMs?: number | undefined) => {};
 
@@ -86,7 +86,7 @@ const generateGalaxy = (
   }
 };
 
-const useGalaxyParameters = (): GalaxyParameters => {
+export const useGalaxyParameters = (): GalaxyParameters => {
   const [parameters, set] = useControls(() => ({
     Galaxy: folder({
       count: {
@@ -169,100 +169,6 @@ function Nucleus({ size }: { size: number }) {
     </mesh>
   );
 }
-
-const getPositionOnArms = (
-  radius: number,
-  spin: number,
-  branches: number,
-  branchNumber?: number
-) => {
-  const spinAngle = radius * spin;
-
-  const branchAngle =
-    ((branchNumber ? branchNumber : Math.floor(Math.random() * 10) % branches) / branches) *
-    Math.PI *
-    2;
-
-  const x = Math.cos(branchAngle + spinAngle) * radius;
-  const y = 0;
-  const z = Math.sin(branchAngle + spinAngle) * radius;
-
-  return [x, y, z];
-};
-
-const Marker3D = () => {
-  const { distanceScale } = useControls({
-    UI: folder({ distanceScale: { min: 1, max: 15, step: 0.5, value: 4.5 } }),
-  });
-
-  return (
-    <Html
-      onClick={(m: any) => alert("Clicked!")}
-      distanceFactor={distanceScale}
-      center
-      position={[0, 0.5, 0]}
-      as="div"
-    >
-      <Fade duration={0.2} delay={0.8}>
-        <MarkerCard />
-      </Fade>
-    </Html>
-  );
-};
-
-type MarkerProps = { distance: number; branchNumber?: number };
-
-const Marker = ({ distance, branchNumber }: MarkerProps) => {
-  const { radius, spin, branches, animate } = useGalaxyParameters();
-  const markerHeight = 0.4;
-
-  const ref = React.useRef<any>(null);
-
-  // Setup initial translation to rotate around the origin (nucleus)
-  useEffect(() => {
-    const r = radius * distance;
-    const [x, _y, z] = getPositionOnArms(r, spin, branches, branchNumber);
-
-    if (ref.current) {
-      ref.current.translateX(x);
-      ref.current.translateZ(z);
-    }
-  }, []);
-
-  const points: [number, number, number][] = [
-    [0, 0, 0],
-    [0, markerHeight, 0],
-  ];
-
-  const { opacity } = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: 0.5 },
-    config: { duration: 1500, easing: easeExpInOut },
-  });
-
-  const geometry = new THREE.BufferGeometry().setFromPoints(
-    points.map((p) => new THREE.Vector3(...p))
-  );
-
-  const AnimatedLine: any = animated.line;
-
-  return (
-    <group ref={ref}>
-      <AnimatedLine geometry={geometry}>
-        <animated.lineBasicMaterial
-          attach="material"
-          color="white"
-          linejoin="round"
-          linecap="round"
-          linewidth={1}
-          transparent
-          opacity={opacity}
-        />
-      </AnimatedLine>
-      <Marker3D />
-    </group>
-  );
-};
 
 type EffectsControls = {
   offSet: number;
