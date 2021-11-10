@@ -68,12 +68,13 @@ const KeyCommand = styled("span", {
 });
 
 export const MarkerCardButton = styled("button", {
-  backgroundColor: "white",
+  backgroundColor: "blue",
+  color: "white",
   borderRadius: 0,
   border: "none",
   fontFamily: "Iosevka SS05",
   fontSize: 20,
-  padding: "4px 8px",
+  padding: "8px 10px",
   marginLeft: "auto",
 
   "&:hover": {
@@ -96,8 +97,11 @@ export default function DefaultMarkerCard() {
           <br />
           Welcome to my galaxy.
           <Emoji symbol="🚀" label="Emoji of a spaceship." spaceLeft />
-          <Emoji symbol="🪐" label="Emoji of saturn." spaceLeft />
-          <Emoji symbol="✨" label="Emoji of stars." spaceLeft />
+          <Emoji symbol="🪐" label="Emoji of saturn." />
+          <Emoji symbol="✨" label="Emoji of stars." />
+          <br />
+          <br />
+          Here you'll find information about myself and the projects I work on.
         </MarkerCardBody>
       </MarkerCard>
 

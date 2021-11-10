@@ -56,15 +56,22 @@ const HomeMarkerCard = styled(MarkerCard, {
   width: 330,
 });
 
+const HomeMarkerCardHeading = styled(MarkerCardHeading, {
+  fontSize: 18,
+});
+
 const HomeMarkerCardBody = styled(MarkerCardBody, {
+  padding: "18px 14px",
   fontSize: 20,
+
+  backdropFilter: "none",
 });
 
 const BootScreen = ({ setBooted }: { setBooted: () => void }) => (
   <Fade duration={0.3}>
     <CenterScreen>
       <HomeMarkerCard>
-        <MarkerCardHeading>Zaymon.dev</MarkerCardHeading>
+        <HomeMarkerCardHeading>Zaymon.dev</HomeMarkerCardHeading>
         <HomeMarkerCardBody>
           Welcome.
           <br />
@@ -101,7 +108,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (booted) {
-      playSfx(sfxAtlas.boot);
+      playSfx(sfxAtlas.powerup);
     }
   }, [booted]);
 

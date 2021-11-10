@@ -6,6 +6,7 @@ import {
   ChromaticAberration,
   DepthOfField,
   EffectComposer,
+  Noise,
 } from "@react-three/postprocessing";
 import { easeExpInOut } from "d3-ease";
 import { button, folder, Leva, useControls } from "leva";
@@ -223,6 +224,7 @@ const Effects = () => {
 
   return (
     <EffectComposer multisampling={2}>
+      <Noise premultiply opacity={0.2} />
       <ChromaticAberration offset={new THREE.Vector2(0.0, offSet)} />
       <Bloom luminanceThreshold={luminanceThreshold} luminanceSmoothing={0.5} height={1000} />
       <DepthOfField

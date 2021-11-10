@@ -78,7 +78,7 @@ export const Marker = ({ distance, branchNumber }: MarkerProps) => {
 
   const ref = React.useRef<THREE.Group>(null);
 
-  const clipped = useClipping(ref, 1.5);
+  const clipped = useClipping(ref, 1.2);
 
   // Setup initial translation to rotate around the origin (nucleus)
   useEffect(() => {
