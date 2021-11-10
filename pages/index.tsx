@@ -11,7 +11,13 @@ import {
   MarkerCardHeading,
 } from "../components/MarkerCard";
 
-import { playSfx, sfxAtlas } from "../components/Sounds";
+import { playSfx, sfxAtlas } from "../modules/Sounds";
+
+let useKeyDown = (...meh: any[]) => {};
+
+if (process.browser) {
+  useKeyDown = require("use-control/lib/keyStream").useKeyDown;
+}
 
 const Body = styled("div", {
   backgroundColor: "#1a1a1a",
@@ -111,6 +117,11 @@ const Home: NextPage = () => {
       playSfx(sfxAtlas.powerup);
     }
   }, [booted]);
+
+  useKeyDown("b".charCodeAt(0), () => {
+    alert("Triggered!");
+    setBooted(true);
+  });
 
   return (
     <>

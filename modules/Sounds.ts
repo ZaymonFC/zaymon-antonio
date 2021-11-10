@@ -1,5 +1,6 @@
 let zzfx = (..._: any) => {};
 
+// Next.JS client side only.
 if (process.browser) {
   zzfx = require("zzfx").zzfx;
 }
