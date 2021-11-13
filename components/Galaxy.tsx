@@ -132,7 +132,7 @@ const useMousePosition = () => {
   return mousePosition;
 };
 
-function Galaxy() {
+function Galaxy({ visible }: { visible: boolean }) {
   const parameters = useGalaxyParameters();
   const particles = useRef<Points>();
 
@@ -140,11 +140,16 @@ function Galaxy() {
     generateGalaxy(parameters, particles);
   }, [parameters, particles]);
 
-  const { scale } = useSpring({
-    from: { scale: 0.0 },
-    to: { scale: 1 },
+  const [{ scale }, set] = useSpring(() => ({
+    scale: 0.1,
     config: { duration: 750, easing: easeExpInOut },
-  });
+  }));
+
+  useEffect(() => {
+    if (visible) {
+      set({ to: { scale: 1 } });
+    }
+  }, [set, visible]);
 
   return (
     <animated.points ref={particles} scale={scale}>
@@ -257,19 +262,23 @@ const TurnTable = ({ children }: { children: React.ReactNode }) => {
   return <group ref={ref}>{children}</group>;
 };
 
-const Three = () => (
+const Three = ({ visible }: { visible: boolean }) => (
   <Fade duration={0.1}>
     <Leva collapsed />
-    <Canvas linear flat camera={{ position: [0, 1.5, 5] }}>
+    <Canvas linear flat camera={{ position: [0, 1.5, 5] }} style={{ opacity: visible ? 1 : 0 }}>
       <OrbitControls enableZoom enableRotate enableDamping />
       <Suspense fallback={null}>
         <TurnTable>
-          <Galaxy />
+          <Galaxy visible={visible} />
           <Nucleus size={0.075} />
-          <Marker distance={0.2} branchNumber={1} />
-          <Marker distance={0.2} branchNumber={2} />
-          <Marker distance={0.2} branchNumber={3} />
-          <Marker distance={0.2} branchNumber={4} />
+          {visible && (
+            <>
+              <Marker distance={0.2} branchNumber={1} />
+              <Marker distance={0.2} branchNumber={2} />
+              <Marker distance={0.2} branchNumber={3} />
+              <Marker distance={0.2} branchNumber={4} />
+            </>
+          )}
         </TurnTable>
       </Suspense>
       <Effects />

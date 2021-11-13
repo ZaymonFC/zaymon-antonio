@@ -1,4 +1,5 @@
 import { styled } from "@stitches/react";
+import { AnimatePresence, motion } from "framer-motion";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect } from "react";
@@ -10,7 +11,6 @@ import {
   MarkerCardButton,
   MarkerCardHeading,
 } from "../components/MarkerCard";
-
 import { playSfx, sfxAtlas } from "../modules/Sounds";
 
 let useKeyDown = (...meh: any[]) => {};
@@ -30,6 +30,17 @@ const Main = styled("main", {
   left: 0,
   width: "100%",
   padding: "32px",
+
+  variants: {
+    visibility: {
+      visible: {
+        opacity: 1,
+      },
+      hidden: {
+        opacity: 0,
+      },
+    },
+  },
 });
 
 const Heading = styled("h1", {
@@ -73,37 +84,51 @@ const HomeMarkerCardBody = styled(MarkerCardBody, {
   backdropFilter: "none",
 });
 
-const BootScreen = ({ setBooted }: { setBooted: () => void }) => (
-  <Fade duration={0.3}>
-    <CenterScreen>
-      <HomeMarkerCard>
-        <HomeMarkerCardHeading>Zaymon.dev</HomeMarkerCardHeading>
-        <HomeMarkerCardBody>
-          Welcome.
-          <br />
-          <br />
-          <MarkerCardButton onClick={() => setBooted()}>
-            Press to [B]oot the Universe
-          </MarkerCardButton>
-        </HomeMarkerCardBody>
-      </HomeMarkerCard>
-    </CenterScreen>
-  </Fade>
+const BootScreen = ({ setBooted }: { booted: boolean; setBooted: () => void }) => {
+  const transition = { type: "spring", stiffness: 10000, damping: 15 };
+  return (
+    <motion.div
+      key="boot-screen"
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      transition={{ delay: 0.4, ...transition }}
+      exit={{ opacity: 0, transition: { delay: 0, ...transition } }}
+      style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}
+    >
+      <CenterScreen>
+        <HomeMarkerCard>
+          <HomeMarkerCardHeading>Zaymon.dev</HomeMarkerCardHeading>
+          <HomeMarkerCardBody>
+            Welcome.
+            <br />
+            <br />
+            <MarkerCardButton onClick={() => setBooted()}>
+              Press to [B]oot the Universe
+            </MarkerCardButton>
+          </HomeMarkerCardBody>
+        </HomeMarkerCard>
+      </CenterScreen>
+    </motion.div>
+  );
+};
+
+const Title = () => (
+  <>
+    <Fade duration={0.5} delay={0.5}>
+      <Heading>Zaymon Antonio.</Heading>
+    </Fade>
+    <Fade duration={0.5} delay={0.8}>
+      <TagLine>Software Engineer.</TagLine>
+    </Fade>
+  </>
 );
 
-const TheGalaxy = () => {
+const TheGalaxy = ({ visible }: { visible: boolean }) => {
   return (
     <>
-      <Three />
-      <Main>
-        <Fade duration={0.5} delay={0.5}>
-          <Heading>Zaymon Antonio.</Heading>
-        </Fade>
-        <Fade duration={0.5} delay={0.8}>
-          <TagLine>Software Engineer.</TagLine>
-        </Fade>
-
-        <div style={{ marginTop: "48px" }}></div>
+      <Three visible={visible} />
+      <Main visibility={visible ? "visible" : "hidden"}>
+        <div style={{ marginTop: "48px" }}>{visible && <Title />}</div>
       </Main>
     </>
   );
@@ -114,12 +139,11 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (booted) {
-      playSfx(sfxAtlas.powerup);
+      playSfx(sfxAtlas.boot);
     }
   }, [booted]);
 
-  useKeyDown("b".charCodeAt(0), () => {
-    alert("Triggered!");
+  useKeyDown("B".charCodeAt(0), () => {
     setBooted(true);
   });
 
@@ -132,8 +156,10 @@ const Home: NextPage = () => {
       </Head>
 
       <Body>
-        {!booted && <BootScreen setBooted={() => setBooted(true)} />}
-        {booted && <TheGalaxy />}
+        <AnimatePresence>
+          <TheGalaxy visible={booted} key="aslkdfj" />
+          {!booted && <BootScreen booted={booted} setBooted={() => setBooted(true)} />}
+        </AnimatePresence>
       </Body>
     </>
   );
