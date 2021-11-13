@@ -4,7 +4,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect } from "react";
 import Fade from "../components/Fade";
-import Three from "../components/Galaxy";
+import Scene from "../components/Scene";
 import {
   MarkerCard,
   MarkerCardBody,
@@ -111,7 +111,7 @@ const Title = () => (
 const TheGalaxy = ({ visible }: { visible: boolean }) => {
   return (
     <>
-      <Three visible={visible} />
+      <Scene visible={visible} />
       <Main visibility={visible ? "visible" : "hidden"}>{visible && <Title />}</Main>
     </>
   );

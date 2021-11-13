@@ -1,11 +1,10 @@
 import { animated, useSpring } from "@react-spring/three";
 import { Html, Sphere } from "@react-three/drei";
-import { ThreeEvent, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { easeExpInOut } from "d3-ease";
 import { folder, useControls } from "leva";
 import React, { useEffect, useState } from "react";
 import * as THREE from "three";
-import { Vector3 } from "three";
 import Fade from "./Fade";
 import { useGalaxyParameters } from "./Galaxy";
 import MarkerCard from "./MarkerCard";
