@@ -15,6 +15,10 @@ export const MarkerCard = styled("div", {
   backdropFilter: "blur(8px)",
 
   background: "#000000ba",
+
+  variants: {
+    wide: { true: { width: 330 } },
+  },
 });
 
 export const MarkerCardHeading = styled("div", {
@@ -34,6 +38,18 @@ export const MarkerCardHeading = styled("div", {
     borderColor: indigo,
     cursor: "pointer",
   },
+
+  variants: {
+    size: {
+      small: { fontSize: 10 },
+      medium: { fontSize: 14 },
+      large: { fontSize: 18 },
+    },
+  },
+
+  defaultVariants: {
+    size: "medium",
+  },
 });
 
 export const MarkerCardBody = styled("div", {
@@ -41,6 +57,17 @@ export const MarkerCardBody = styled("div", {
   padding: "10px 14px",
   fontFamily: "Iosevka SS05",
   fontSize: 14,
+
+  variants: {
+    boot: {
+      true: {
+        padding: "18px 14px",
+        fontSize: 20,
+
+        backdropFilter: "none",
+      },
+    },
+  },
 });
 
 const MarkerCardControls = styled("div", {

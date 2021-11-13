@@ -69,21 +69,6 @@ const CenterScreen = styled("div", {
   height: "100vh",
 });
 
-const HomeMarkerCard = styled(MarkerCard, {
-  width: 330,
-});
-
-const HomeMarkerCardHeading = styled(MarkerCardHeading, {
-  fontSize: 18,
-});
-
-const HomeMarkerCardBody = styled(MarkerCardBody, {
-  padding: "18px 14px",
-  fontSize: 20,
-
-  backdropFilter: "none",
-});
-
 const BootScreen = ({ setBooted }: { booted: boolean; setBooted: () => void }) => {
   const transition = { type: "spring", stiffness: 10000, damping: 15 };
   return (
@@ -96,17 +81,17 @@ const BootScreen = ({ setBooted }: { booted: boolean; setBooted: () => void }) =
       style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}
     >
       <CenterScreen>
-        <HomeMarkerCard>
-          <HomeMarkerCardHeading>Zaymon.dev</HomeMarkerCardHeading>
-          <HomeMarkerCardBody>
+        <MarkerCard wide>
+          <MarkerCardHeading size="large">Zaymon.dev</MarkerCardHeading>
+          <MarkerCardBody boot>
             Welcome.
             <br />
             <br />
             <MarkerCardButton onClick={() => setBooted()}>
               Press to [B]oot the Universe
             </MarkerCardButton>
-          </HomeMarkerCardBody>
-        </HomeMarkerCard>
+          </MarkerCardBody>
+        </MarkerCard>
       </CenterScreen>
     </motion.div>
   );
@@ -127,9 +112,7 @@ const TheGalaxy = ({ visible }: { visible: boolean }) => {
   return (
     <>
       <Three visible={visible} />
-      <Main visibility={visible ? "visible" : "hidden"}>
-        <div style={{ marginTop: "48px" }}>{visible && <Title />}</div>
-      </Main>
+      <Main visibility={visible ? "visible" : "hidden"}>{visible && <Title />}</Main>
     </>
   );
 };
@@ -140,6 +123,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (booted) {
       playSfx(sfxAtlas.boot);
+      playSfx(sfxAtlas.powerup);
     }
   }, [booted]);
 
