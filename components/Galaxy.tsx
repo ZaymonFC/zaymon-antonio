@@ -117,7 +117,7 @@ export const Galaxy = ({ visible }: { visible: boolean }) => {
   }, [parameters, particles]);
 
   const [{ scale }, set] = useSpring(() => ({
-    scale: 0.1,
+    scale: 0.0001,
     config: { duration: 750, easing: easeExpInOut },
   }));
 
