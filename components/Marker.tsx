@@ -5,6 +5,7 @@ import { easeExpInOut } from "d3-ease";
 import { folder, useControls } from "leva";
 import React, { useEffect, useState } from "react";
 import * as THREE from "three";
+import { useNavigation } from "../hooks/useNavigation";
 import Fade from "./Fade";
 import { useGalaxyParameters } from "./Galaxy";
 import MarkerCard from "./MarkerCard";
@@ -64,11 +65,12 @@ const useClipping = (ref: React.RefObject<THREE.Object3D>, threshold: number) =>
   return clipped;
 };
 
-type MarkerProps = { distance: number; branchNumber?: number };
+type MarkerProps = { distance: number; branchNumber?: number; rank: number };
 
 const AnimatedSphere = animated(Sphere);
 
-export const Marker = ({ distance, branchNumber }: MarkerProps) => {
+export const Marker = ({ distance, branchNumber, rank }: MarkerProps) => {
+  const { recordPoint } = useNavigation();
   const { radius, spin, branches } = useGalaxyParameters();
   const markerHeight = 0.2501;
 
@@ -79,11 +81,12 @@ export const Marker = ({ distance, branchNumber }: MarkerProps) => {
 
   const clipped = useClipping(ref, 1.2);
 
-  // Setup initial translation to rotate around the origin (nucleus)
+  // Initial transformation and navigation registration
   useEffect(() => {
     if (ref.current) {
       ref.current.translateX(x);
       ref.current.translateZ(z);
+      recordPoint(rank, [x, z]);
     }
   }, []);
 

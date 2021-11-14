@@ -1,16 +1,23 @@
 import { OrbitControls } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Leva } from "leva";
 import React, { Suspense, useEffect, useRef } from "react";
+import { useNavigation } from "../hooks/useNavigation";
 import Effects from "./Effects";
 import Fade from "./Fade";
-import { Galaxy, Nucleus, useGalaxyParameters } from "./Galaxy";
+import { Galaxy, Nucleus } from "./Galaxy";
 import { Marker } from "./Marker";
 
 let useMouseMove = (sink: (p: number[]) => void, throttleMs?: number | undefined) => {};
 
 if (process.browser) {
   useMouseMove = require("use-control/lib/input/mouse").useMouseMove;
+}
+
+let useKeyDown = (...meh: any[]) => {};
+
+if (process.browser) {
+  useKeyDown = require("use-control/lib/keyStream").useKeyDown;
 }
 
 const useMousePosition = () => {
@@ -20,68 +27,64 @@ const useMousePosition = () => {
   return mousePosition;
 };
 
-const TurnTable = ({ children }: { children: React.ReactNode }) => {
-  const { animate } = useGalaxyParameters();
-  const ref = useRef<any>();
-  const mousePosition = useMousePosition();
+const pointToAzimuthAngle = (x: number, z: number) => Math.PI + Math.PI / 2 + Math.atan2(z, -x);
 
-  useFrame(({ clock }, _delta) => {
-    const elapsedTime = clock.getElapsedTime();
+interface OrbitControlsRef {
+  setAzimuthalAngle: (value: number) => void;
+  setPolarAngle: (value: number) => void;
+}
 
-    if (animate) {
-      const [x, y] = mousePosition.current;
+const useMotionControl = (ref: React.MutableRefObject<OrbitControlsRef | undefined>) => {
+  const { move, points, current } = useNavigation();
 
-      if (ref.current) {
-        ref.current.rotation.y = 0.003 * elapsedTime + 0.00002 * x;
-        ref.current.rotation.x = 0.00001 * y;
-      }
+  useKeyDown(39, () => move("Left"));
+  useKeyDown(37, () => move("Right"));
+
+  useEffect(() => {
+    const point: [number, number] | undefined = points[current];
+
+    if (ref.current && point) {
+      const [x, z] = point;
+
+      console.log(current);
+
+      ref.current.setAzimuthalAngle(pointToAzimuthAngle(x, z));
+      ref.current.setPolarAngle(1.4);
     }
-  });
-
-  return <group ref={ref}>{children}</group>;
+  }, [ref, points, current]);
 };
 
-const MotionControl = ({ children }: { children: React.ReactNode }) => {
-  const { animate } = useGalaxyParameters();
-  const ref = useRef<any>();
+const Three = ({ visible }: { visible: boolean }) => {
+  const orbitControlsRef = useRef<any>();
 
-  const mousePosition = useMousePosition();
+  useEffect(() => {
+    console.log(orbitControlsRef);
+  }, [orbitControlsRef]);
 
-  useFrame(() => {
-    if (ref.current) {
-      const [x, y] = mousePosition.current;
+  useMotionControl(orbitControlsRef);
 
-      ref.current.rotation.y = 0.88 + x / 150000;
-      ref.current.rotation.x = y / 150000;
-    }
-  });
-
-  return <group ref={ref}>{children}</group>;
-};
-
-const Three = ({ visible }: { visible: boolean }) => (
-  <Fade duration={0.1}>
-    <Leva collapsed />
-    <Canvas linear flat camera={{ position: [0, 1, 4.5] }} style={{ opacity: visible ? 1 : 0 }}>
-      <OrbitControls enableZoom enableRotate enableDamping />
-      <Suspense fallback={null}>
-        <MotionControl>
+  return (
+    <Fade duration={0.1}>
+      <Leva collapsed />
+      <Canvas linear flat camera={{ position: [0, 1, 4.5] }} style={{ opacity: visible ? 1 : 0 }}>
+        <OrbitControls ref={orbitControlsRef} enableRotate enableDamping enableZoom={false} />
+        <Suspense fallback={null}>
           <Galaxy visible={visible} />
           <Nucleus size={0.075} />
           {visible && (
             <>
-              <Marker distance={0.2} branchNumber={1} />
-              <Marker distance={0.2} branchNumber={2} />
-              <Marker distance={0.2} branchNumber={3} />
-              <Marker distance={0.2} branchNumber={4} />
+              <Marker distance={0.2} branchNumber={1} rank={3} />
+              <Marker distance={0.2} branchNumber={2} rank={2} />
+              <Marker distance={0.2} branchNumber={3} rank={1} />
+              <Marker distance={0.2} branchNumber={4} rank={0} />
             </>
           )}
-        </MotionControl>
-      </Suspense>
-      <Effects />
-      {/* <axesHelper args={[1, 2, 2]} /> */}
-    </Canvas>
-  </Fade>
-);
+        </Suspense>
+        <Effects />
+        {/* <axesHelper args={[20, 20, 20]} /> */}
+      </Canvas>
+    </Fade>
+  );
+};
 
 export default Three;
