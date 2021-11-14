@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Leva } from "leva";
 import React, { Suspense, useEffect, useRef } from "react";
 import { useNavigation } from "../hooks/useNavigation";
+import { playSfx, sfxAtlas } from "../modules/Sounds";
 import Effects from "./Effects";
 import Fade from "./Fade";
 import { Galaxy, Nucleus } from "./Galaxy";
@@ -37,8 +38,13 @@ interface OrbitControlsRef {
 const useMotionControl = (ref: React.MutableRefObject<OrbitControlsRef | undefined>) => {
   const { move, points, current } = useNavigation();
 
-  useKeyDown(39, () => move("Left"));
-  useKeyDown(37, () => move("Right"));
+  const moveAndBlip = (dir: any) => {
+    playSfx(sfxAtlas.blip);
+    move(dir);
+  };
+
+  useKeyDown(39, () => moveAndBlip("Left"));
+  useKeyDown(37, () => moveAndBlip("Right"));
 
   useEffect(() => {
     const point: [number, number] | undefined = points[current];

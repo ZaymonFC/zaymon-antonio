@@ -8,7 +8,7 @@ import * as THREE from "three";
 import { useNavigation } from "../hooks/useNavigation";
 import Fade from "./Fade";
 import { useGalaxyParameters } from "./Galaxy";
-import MarkerCard from "./MarkerCard";
+import { DefaultMarkerCard } from "./MarkerCard";
 
 const getPositionOnArms = (
   radius: number,
@@ -38,7 +38,7 @@ const Marker3D = () => {
   return (
     <Html distanceFactor={distanceScale} center position={[0, 0.25, 0]} as="div">
       <Fade duration={0.2} delay={0.6}>
-        <MarkerCard />
+        <DefaultMarkerCard />
       </Fade>
     </Html>
   );

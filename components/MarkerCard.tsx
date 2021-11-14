@@ -54,7 +54,7 @@ export const MarkerCardHeading = styled("div", {
 
 export const MarkerCardBody = styled("div", {
   marginTop: 10,
-  padding: "10px 14px",
+  padding: "18px 14px",
   fontFamily: "Iosevka SS05",
   fontSize: 14,
 
@@ -63,7 +63,6 @@ export const MarkerCardBody = styled("div", {
       true: {
         padding: "18px 14px",
         fontSize: 20,
-
         backdropFilter: "none",
       },
     },
@@ -110,34 +109,22 @@ export const MarkerCardButton = styled("button", {
   },
 });
 
-export default function DefaultMarkerCard() {
-  return (
-    <>
-      <MarkerCard>
-        <MarkerCardHeading>Zaymon.dev</MarkerCardHeading>
-        <MarkerCardBody>
-          Hi there!
-          <br />
-          <br /> My name is <strong>Zaymon</strong>. I'm a full stack software engineer specialising
-          in building software experiences that create real moments of connection.
-          <br />
-          <br />
-          Welcome to my galaxy.
-          <Emoji symbol="🚀" label="Emoji of a spaceship." spaceLeft />
-          <Emoji symbol="🪐" label="Emoji of saturn." />
-          <Emoji symbol="✨" label="Emoji of stars." />
-          <br />
-          <br />
-          Here you'll find information about myself and the projects I work on.
-        </MarkerCardBody>
-      </MarkerCard>
-
-      {/* <Fade duration={0.2} delay={1.5}>
-        <MarkerCardControls>
-          <KeyCommand>{"<<"}</KeyCommand>
-          <KeyCommand>{">>"}</KeyCommand>
-        </MarkerCardControls>
-      </Fade> */}
-    </>
-  );
-}
+export const DefaultMarkerCard = () => (
+  <>
+    <MarkerCard>
+      <MarkerCardHeading>Zaymon.dev</MarkerCardHeading>
+      <MarkerCardBody>
+        Hi there!
+        <br />
+        <br /> My name is <strong>Zaymon</strong>. I'm a full stack software engineer specialising
+        in building software experiences that create real moments of connection.
+        <br />
+        <br />
+        Welcome to my galaxy.
+        <Emoji symbol="🚀" label="Emoji of a spaceship." spaceLeft />
+        <Emoji symbol="🪐" label="Emoji of saturn." />
+        <Emoji symbol="✨" label="Emoji of stars." />
+      </MarkerCardBody>
+    </MarkerCard>
+  </>
+);

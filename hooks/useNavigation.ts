@@ -10,9 +10,9 @@ type Direction = "Left" | "Right";
 const calculateMove = (n: number, current: number, direction: Direction) => {
   switch (direction) {
     case "Left":
-      return (current + 1) % n;
+      return Math.min(current + 1, n - 1);
     case "Right":
-      return current === 0 ? n - 1 : current - 1;
+      return Math.max(0, current - 1);
   }
 };
 
