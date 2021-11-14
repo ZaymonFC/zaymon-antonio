@@ -1,5 +1,5 @@
 import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Leva } from "leva";
 import React, { Suspense, useEffect, useRef } from "react";
 import { useNavigation } from "../hooks/useNavigation";
@@ -8,24 +8,27 @@ import Effects from "./Effects";
 import Fade from "./Fade";
 import { Galaxy, Nucleus } from "./Galaxy";
 import { Marker } from "./Marker";
-
-let useMouseMove = (sink: (p: number[]) => void, throttleMs?: number | undefined) => {};
-
-if (process.browser) {
-  useMouseMove = require("use-control/lib/input/mouse").useMouseMove;
-}
-
-let useKeyDown = (...meh: any[]) => {};
-
-if (process.browser) {
-  useKeyDown = require("use-control/lib/keyStream").useKeyDown;
-}
+import { BoundlessGarden, IntroCard, LetterDeskApp, Socials } from "./Content";
+import { useMouseMove, useKeyDown, KEYS } from "../modules/Control";
 
 const useMousePosition = () => {
   const mousePosition = useRef<number[]>([0, 0]);
   useMouseMove((p) => (mousePosition.current = p));
 
   return mousePosition;
+};
+
+const useMouseRotation = (ref: React.MutableRefObject<THREE.Group | undefined>) => {
+  const mousePosition = useMousePosition();
+
+  useFrame(() => {
+    if (ref.current && mousePosition.current) {
+      const [mouseX, mouseY] = mousePosition.current;
+
+      ref.current.rotation.y = mouseX * 0.000001;
+      ref.current.rotation.z = mouseY * 0.000001;
+    }
+  });
 };
 
 const pointToAzimuthAngle = (x: number, z: number) => Math.PI + Math.PI / 2 + Math.atan2(z, -x);
@@ -43,8 +46,8 @@ const useMotionControl = (ref: React.MutableRefObject<OrbitControlsRef | undefin
     move(dir);
   };
 
-  useKeyDown(39, () => moveAndBlip("Left"));
-  useKeyDown(37, () => moveAndBlip("Right"));
+  useKeyDown(KEYS.left_arrow, () => moveAndBlip("Left"));
+  useKeyDown(KEYS.right_arrow, () => moveAndBlip("Right"));
 
   useEffect(() => {
     const point: [number, number] | undefined = points[current];
@@ -60,6 +63,13 @@ const useMotionControl = (ref: React.MutableRefObject<OrbitControlsRef | undefin
   }, [ref, points, current]);
 };
 
+const MouseRotation = ({ children }: { children: React.ReactNode }) => {
+  const groupRef = useRef<THREE.Group>();
+  useMouseRotation(groupRef);
+
+  return <group ref={groupRef}>{children}</group>;
+};
+
 const Three = ({ visible }: { visible: boolean }) => {
   const orbitControlsRef = useRef<any>();
 
@@ -69,22 +79,34 @@ const Three = ({ visible }: { visible: boolean }) => {
 
   useMotionControl(orbitControlsRef);
 
+  const { current } = useNavigation();
+
   return (
     <Fade duration={0.1}>
       <Leva collapsed />
       <Canvas linear flat camera={{ position: [0, 1, 4.5] }} style={{ opacity: visible ? 1 : 0 }}>
         <OrbitControls ref={orbitControlsRef} enableRotate enableDamping enableZoom={false} />
         <Suspense fallback={null}>
-          <Galaxy visible={visible} />
-          <Nucleus size={0.075} />
-          {visible && (
-            <>
-              <Marker distance={0.2} branchNumber={1} rank={3} />
-              <Marker distance={0.2} branchNumber={2} rank={2} />
-              <Marker distance={0.2} branchNumber={3} rank={1} />
-              <Marker distance={0.2} branchNumber={4} rank={0} />
-            </>
-          )}
+          <MouseRotation>
+            <Galaxy visible={visible} />
+            <Nucleus size={0.075} />
+            {visible && (
+              <>
+                <Marker distance={0.2} branchNumber={4} rank={0}>
+                  <IntroCard active={current === 0} />
+                </Marker>
+                <Marker distance={0.2} branchNumber={3} rank={1}>
+                  <LetterDeskApp active={current === 1} />
+                </Marker>
+                <Marker distance={0.2} branchNumber={2} rank={2}>
+                  <BoundlessGarden active={current === 2} />
+                </Marker>
+                <Marker distance={0.2} branchNumber={1} rank={3}>
+                  <Socials active={current === 3} />
+                </Marker>
+              </>
+            )}
+          </MouseRotation>
         </Suspense>
         <Effects />
         {/* <axesHelper args={[20, 20, 20]} /> */}

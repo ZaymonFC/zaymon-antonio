@@ -8,7 +8,6 @@ import * as THREE from "three";
 import { useNavigation } from "../hooks/useNavigation";
 import Fade from "./Fade";
 import { useGalaxyParameters } from "./Galaxy";
-import { DefaultMarkerCard } from "./MarkerCard";
 
 const getPositionOnArms = (
   radius: number,
@@ -30,15 +29,15 @@ const getPositionOnArms = (
   return [x, y, z];
 };
 
-const Marker3D = () => {
+const Marker3D = ({ children }: { children: React.ReactNode }) => {
   const { distanceScale } = useControls({
-    UI: folder({ distanceScale: { min: 1, max: 15, step: 0.5, value: 4.5 } }),
+    UI: folder({ distanceScale: { min: 1, max: 15, step: 0.5, value: 4 } }),
   });
 
   return (
     <Html distanceFactor={distanceScale} center position={[0, 0.25, 0]} as="div">
       <Fade duration={0.2} delay={0.6}>
-        <DefaultMarkerCard />
+        {children}
       </Fade>
     </Html>
   );
@@ -65,11 +64,16 @@ const useClipping = (ref: React.RefObject<THREE.Object3D>, threshold: number) =>
   return clipped;
 };
 
-type MarkerProps = { distance: number; branchNumber?: number; rank: number };
+type MarkerProps = {
+  distance: number;
+  branchNumber?: number;
+  rank: number;
+  children: React.ReactNode;
+};
 
 const AnimatedSphere = animated(Sphere);
 
-export const Marker = ({ distance, branchNumber, rank }: MarkerProps) => {
+export const Marker = ({ distance, branchNumber, rank, children }: MarkerProps) => {
   const { recordPoint } = useNavigation();
   const { radius, spin, branches } = useGalaxyParameters();
   const markerHeight = 0.2501;
@@ -84,11 +88,13 @@ export const Marker = ({ distance, branchNumber, rank }: MarkerProps) => {
   // Initial transformation and navigation registration
   useEffect(() => {
     if (ref.current) {
+      ref.current.position.x = 0;
+      ref.current.position.z = 0;
       ref.current.translateX(x);
       ref.current.translateZ(z);
       recordPoint(rank, [x, z]);
     }
-  }, []);
+  }, [radius, spin, branches]);
 
   const points: [number, number, number][] = [
     [0, 0, 0],
@@ -130,7 +136,7 @@ export const Marker = ({ distance, branchNumber, rank }: MarkerProps) => {
               opacity={opacity}
             />
           </AnimatedLine>
-          <Marker3D />
+          <Marker3D>{children}</Marker3D>
           <AnimatedSphere args={[0.01]}>
             <animated.meshBasicMaterial attach="material" transparent opacity={opacity} />
           </AnimatedSphere>
