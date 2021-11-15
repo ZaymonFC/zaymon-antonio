@@ -25,7 +25,7 @@ export const MarkerCard = styled("div", {
     active: {
       true: {
         boxShadow: `
-          0 0 14px #ffffff99;         /* outer right cyan */
+          // 0 0 14px #ffffff99;         /* outer right cyan */
           `,
       },
     },
